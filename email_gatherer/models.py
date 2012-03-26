@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
@@ -82,3 +83,8 @@ class GatheredEmail(models.Model):
 
 class GatheredEmailAdmin(admin.ModelAdmin):
     list_display=['email',]
+
+
+class GatheredEmailForm(forms.ModelForm):
+    class Meta:
+        model = GatheredEmail
