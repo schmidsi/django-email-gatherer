@@ -1,26 +1,33 @@
+from django.contrib import admin
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .utils import get_object
 
 
-class Base(models.Model):
+class GatheredEmail(models.Model):
     """
     Simple base model. The only field, every possible email gathering system has in common is: email.
     But it is extensible. So check the extensions or write your own (and make a pull request).
     """
     
     email = models.EmailField(help_text=_('The gathered email.'))
+
+    class Meta:
+        verbose_name = _('Gathered Email')
+        verbose_name_plural = _('Gathered Emails')
     
     # all extensions are listed here
     _extensions = set()
     
     @classmethod
     def register_extension(cls, register_fn):
+        #from .admin import GatheredEmailAdmin
         """
         actually register an extension
         """
-        register_fn(cls, None)
+        register_fn(cls, GatheredEmailAdmin)
     
     @classmethod
     def register_extensions(cls, *extensions):
@@ -70,4 +77,8 @@ class Base(models.Model):
                 fn = ext.register
 
             cls.register_extension(fn)
-            cls._feincms_extensions.add(ext)
+            cls._extensions.add(ext)
+
+
+class GatheredEmailAdmin(admin.ModelAdmin):
+    list_display=['email',]
